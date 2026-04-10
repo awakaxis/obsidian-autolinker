@@ -1,0 +1,11 @@
+{
+	"id": "autolinker",
+	"name": "Autolinker",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "Automatically creates links within specified index files.",
+	"author": "awakaxis",
+	"authorUrl": "https://github.com/awakaxis",
+	"fundingUrl": "https://github.com/awakaxis",
+	"isDesktopOnly": false
+}
