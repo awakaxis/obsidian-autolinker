@@ -33,22 +33,6 @@ export default class AutoLinker extends Plugin {
 		return path.startsWith(this.settings.indexFileName);
 	}
 
-	reloadObserver() {
-		if (this.settings.hideIndex) {
-			this.indexObserver.observe(document.body, {
-				childList: true,
-				subtree: true,
-			});
-		} else {
-			this.indexObserver.disconnect();
-			document
-				.querySelectorAll(".remove-indentation-guide, .hide-index")
-				.forEach((element) => {
-					element.classList.remove(
-						"remove-indentation-guide",
-						"hide-index",
-					);
-				});
 		}
 	}
 
@@ -157,36 +141,52 @@ export default class AutoLinker extends Plugin {
 		await this.loadSettings();
 
 		this.indexObserver = new MutationObserver(() => {
-			document
-				.querySelectorAll(".nav-folder-children")
-				.forEach((element) => {
-					let count = 0;
-					let seenIndex = false;
-					for (let i = 0; i < element.children.length; i++) {
-						const child = element.children.item(i);
-						if (child?.classList.contains("nav-folder")) {
-							count++;
-						}
-						if (child?.classList.contains("nav-file")) {
-							count++;
-							if (
-								child.querySelector(
-									'.nav-file-title[data-path$="index.md"]',
-								)
-							) {
-								seenIndex = true;
-								child.classList.add("hide-index");
+			if (this.settings.hideIndex) {
+				document
+					.querySelectorAll(".nav-folder-children")
+					.forEach((element) => {
+						let count = 0;
+						let seenIndex = false;
+						for (let i = 0; i < element.children.length; i++) {
+							const child = element.children.item(i);
+							if (child?.classList.contains("nav-folder")) {
+								count++;
+							}
+							if (child?.classList.contains("nav-file")) {
+								count++;
+								if (
+									child.querySelector(
+										'.nav-file-title[data-path$="index.md"]',
+									)
+								) {
+									seenIndex = true;
+									child.classList.add(HIDE_FILE_CLASS);
+								}
 							}
 						}
-					}
-					element.classList.toggle(
-						"remove-indentation-guide",
-						count == 1 && seenIndex,
-					);
-				});
+						element.classList.toggle(
+							HIDE_INDENT_CLASS,
+							count == 1 && seenIndex,
+						);
+					});
+			} else {
+				document
+					.querySelectorAll(
+						"." + HIDE_INDENT_CLASS + ", ." + HIDE_FILE_CLASS,
+					)
+					.forEach((element) => {
+						element.classList.remove(
+							HIDE_INDENT_CLASS,
+							HIDE_FILE_CLASS,
+						);
+					});
+			}
 		});
 
-		this.reloadObserver();
+		this.indexObserver.observe(document.body, {
+			childList: true,
+			subtree: true,
+		});
 
 		// This adds a complex command that can check whether the current state of the app allows execution of the command
 		this.addCommand({

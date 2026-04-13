@@ -56,7 +56,6 @@ export class ALSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.hideIndex)
 					.onChange(async (value) => {
 						this.plugin.settings.hideIndex = value;
-						this.plugin.reloadObserver();
 						await this.plugin.saveSettings();
 					}),
 			);
