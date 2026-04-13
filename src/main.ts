@@ -7,6 +7,9 @@ import {
 import { format } from "util";
 import matter from "gray-matter";
 
+const HIDE_INDENT_CLASS = "hide-indentation-guide-autolinker";
+const HIDE_FILE_CLASS = "hide-file-autolinker";
+
 export default class AutoLinker extends Plugin {
 	settings: AutoLinkerSettings;
 	indexObserver: MutationObserver;
